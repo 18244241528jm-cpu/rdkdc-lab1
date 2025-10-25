@@ -1,21 +1,6 @@
-# macOS
-.DS_Store
-
-# Python
+.venv/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.venv/
-venv/
-env/
-*.egg-info/
-
-# MATLAB
-*.asv
-*.mex*
-*.autosave
-
-# Editors
-.vscode/
-.idea/
+*.zip
+*.mp4
+.DS_Store
