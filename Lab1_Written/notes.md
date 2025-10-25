@@ -1,53 +1,59 @@
-# Lab1 实验报告
+# Lab1 Experimental Report
 
-## Task 1: UR5(e) 仿真
+## Task 1: UR5(e) Simulation
 
-### 运行命令
+### Execution Commands
 ```bash
-# 启动仿真
+# Start simulation
 ros2 launch rdkdc ur5e_simulation.launch.py
 
-# 运行控制脚本
+# Run control script
 python Lab1_Code/lab1_1.py
 ```
 
-### 关键参数
-- `UR_MAX_DELTA=0.05`: 关节角度最大变化量（弧度）
-- `UR_DT_MARGIN=0.90`: 时间间隔安全裕量
-- `UR_DT_FLOOR=0.8`: 最小时间间隔
+### Key Parameters
+- `UR_MAX_DELTA=0.05`: Maximum joint angle change (radians)
+- `UR_DT_MARGIN=0.90`: Time interval safety margin
+- `UR_DT_FLOOR=0.8`: Minimum time interval
 
-### 排队 vs 不排队现象
-- **不排队**：快速连续调用会覆盖前一个目标，中间路点无法到达
-- **排队**：等待前一个动作完成再发送新目标，保证所有路点都能到达
+### Queuing vs Non-Queuing Behavior
+- **Non-Queuing**: Rapid successive calls overwrite previous targets, intermediate waypoints may not be reached
+- **Queuing**: Wait for previous motion to complete before sending new target, ensuring all waypoints are reached
 
-## Task 2: 矩阵与函数
+## Task 2: Matrices and Functions
 
-### 函数实现说明
+### Function Implementation Details
 
 #### ROTX/ROTY/ROTZ
-- 基础旋转矩阵，使用标准三角函数公式
-- 数值稳定，处理边界情况
+- Basic rotation matrices using standard trigonometric formulas
+- Numerically stable with proper boundary case handling
 
 #### EULERXYZ/EULERXYZINV
-- 欧拉角变换：R = Rx(a) @ Ry(b) @ Rz(c)
-- 逆变换处理gimbal lock情况（|cos(b)|≈0时）
-- 当检测到奇异情况时显示警告并优雅处理
+- Euler angle transformation: R = Rx(a) @ Ry(b) @ Rz(c)
+- Inverse transformation handles gimbal lock cases (when |cos(b)| ≈ 0)
+- Displays warning and gracefully handles singular conditions
 
 #### SKEW3/SKEW6
-- 反对称矩阵，用于旋量表示
-- SKEW6处理6D twist向量
+- Skew-symmetric matrices for screw representation
+- SKEW6 handles 6D twist vectors
 
 #### EXPCR/EXPCF
-- 使用罗德里格斯公式实现
-- 处理纯平移和纯旋转的边界情况
-- 数值稳定，避免除零错误
+- Implemented using Rodrigues' rotation formula
+- Handles boundary cases for pure translation and pure rotation
+- Numerically stable, avoids division by zero
 
 #### FINV
-- 利用齐次变换矩阵的特殊结构
-- 使用R.T和-R.T@t公式，避免直接求逆
+- Exploits special structure of homogeneous transformation matrices
+- Uses R.T and -R.T@t formulas, avoiding direct matrix inversion
 
-### 数值验证
-所有函数都通过了数值精度测试：
-- 欧拉角往返误差 < 1e-15
-- 旋转矩阵正交性验证通过
-- 齐次变换求逆精度 < 1e-15
+### Numerical Verification
+All functions passed numerical precision tests:
+- Euler angle round-trip error < 1e-15
+- Rotation matrix orthogonality verification passed
+- Homogeneous transformation inversion precision < 1e-15
+
+### Implementation Notes
+- All functions include comprehensive error handling
+- Numerical stability considerations for edge cases
+- Proper documentation and type hints
+- Compatible with standard robotics libraries
